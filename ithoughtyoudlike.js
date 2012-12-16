@@ -21,7 +21,6 @@ if (Meteor.isClient) {
         else {
             console.log('thanks. want to sign up?');
         }
-
     }
   });
 }
