@@ -13,6 +13,35 @@
 
 LinkRecipients = new Meteor.Collection('linkRecipients');
 
+/* custom */
+
+/* Feedback handling */
+Feedback = {         
+    /*
+     * @param msg: string to display to user
+     * @param loc: the id of the dom el to insert message into
+     */
+    pop: function(msg, loc) {
+        var domObj = $('#' + loc);
+        domObj.text(msg); 
+        domObj.fadeIn().delay(4000).fadeOut(); 
+    },
+
+    /* callback for LinkRecipients.insert() */
+    showLinkSubmissionResults: function(error, result) {
+        var msg;
+
+        if (error) {
+            msg = "Erm, something went awry. Would you mind trying again?";
+        }
+        else {
+            msg = "Saved! I'm sure they'll enjoy it.";
+        }
+
+        Feedback.pop(msg, 'contentMsg');
+    }
+};
+
 /* client events and config */
 if (Meteor.isClient) {
     Accounts.ui.config({
@@ -34,7 +63,15 @@ if (Meteor.isClient) {
                 // if the link sender is logged in
                 if (sender) {
                     
-                    LinkRecipients.insert({url: url, email: email, desc: desc, sender: sender}, Feedback.showLinkSubmissionResults);
+                    LinkRecipients.insert(
+                        {
+                            url: url, 
+                            email: email, 
+                            desc: desc, 
+                            sender: sender
+                        },
+                        Feedback.showLinkSubmissionResults
+                    );
                 }
                 // prompt to login
                 else {
@@ -50,32 +87,3 @@ if (Meteor.isServer) {
 
     });
 }
-
-/* custom */
-
-/* Feedback handling */
-Feedback = {         
-    /*
-     * @param msg: string to display to user
-     * @param loc: the id of the dom el to insert message into
-     */
-    pop: function(msg, loc) {
-        var domObj = $('#' + loc);
-        domObj.text(msg); 
-        domObj.fadeIn().delay(4000).fadeOut(); 
-    },
-
-    /* callback for LinkRecipients.insert() */
-    showLinkSubmissionResults: function(err) {
-        var msg;
-
-        if (err) {
-            msg = "Erm, something went awry. Would you mind trying again?";
-        }
-        else {
-            msg = "Saved! I'm sure they'll enjoy it.";
-        }
-
-        Feedback.pop(msg, 'main');
-    }
-};

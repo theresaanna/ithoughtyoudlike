@@ -5,12 +5,23 @@
 <body>
     {{loginButtons}}
     <div id="userMenu"></div>
+    
+    {{#if currentUser}}
+        <div id="userMenu">
+            <ul>
+                <li><a href="">My link list</a></li>
+                <li><a href="">Sent links</a></li>
+            </ul>
+        </div>
+    {{/if}}
+
 
     {{> linkForm}}
 </body>
 
 <template name="linkForm">
     <h1>I thought you'd like this.</h1>
+    <div id="contentMsg"></div>
     <form id="newLink">
         <input type="url" placeholder="url" id="url" required />
         <input type="email" placeholder="email" id="email" required />
