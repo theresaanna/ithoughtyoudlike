@@ -1,5 +1,7 @@
-Users = new Meteor.Collection('users');
+/* db collections */
+LinkRecipients = new Meteor.Collection('linkRecipients');
 
+/* client events and config */
 if (Meteor.isClient) {
     Accounts.ui.config({
         requestPermissions: {
@@ -18,7 +20,7 @@ if (Meteor.isClient) {
 
                 if (sender) {
                     Feedback.pop('Thanks!', 'main');
-                    Users.insert({url: url, email: email, desc: desc, sender: sender});
+                    LinkRecipients.insert({url: url, email: email, desc: desc, sender: sender});
                     // lookup target user
                     // ask if we should send a notification
                 }
@@ -29,12 +31,16 @@ if (Meteor.isClient) {
     });
 }
 
+/* server startup and input handling */
 if (Meteor.isServer) {
     Meteor.startup(function () {
 
     });
 }
 
+/* custom */
+
+/* Feedback handling */
 Feedback = {         
     pop: function(msg, loc) {
         var domObj = $('#' + loc);
