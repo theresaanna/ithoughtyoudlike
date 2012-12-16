@@ -9,8 +9,6 @@
  *              url
  *              sender
  *          }
- *
- *
  */
 
 LinkRecipients = new Meteor.Collection('linkRecipients');
@@ -35,10 +33,8 @@ if (Meteor.isClient) {
 
                 // if the link sender is logged in
                 if (sender) {
-                    Feedback.pop('Thanks!', 'main');
-                    LinkRecipients.insert({url: url, email: email, desc: desc, sender: sender});
-                    // lookup target user
-                    // ask if we should send a notification
+                    
+                    LinkRecipients.insert({url: url, email: email, desc: desc, sender: sender}, Feedback.showLinkSubmissionResults);
                 }
                 // prompt to login
                 else {
@@ -59,9 +55,27 @@ if (Meteor.isServer) {
 
 /* Feedback handling */
 Feedback = {         
+    /*
+     * @param msg: string to display to user
+     * @param loc: the id of the dom el to insert message into
+     */
     pop: function(msg, loc) {
         var domObj = $('#' + loc);
         domObj.text(msg); 
         domObj.fadeIn().delay(4000).fadeOut(); 
+    },
+
+    /* callback for LinkRecipients.insert() */
+    showLinkSubmissionResults: function(err) {
+        var msg;
+
+        if (err) {
+            msg = "Erm, something went awry. Would you mind trying again?";
+        }
+        else {
+            msg = "Saved! I'm sure they'll enjoy it.";
+        }
+
+        Feedback.pop(msg, 'main');
     }
 };
