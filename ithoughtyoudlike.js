@@ -7,7 +7,8 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.hello.events({
+  Template.linkForm.events({
+    // submit a new link
     'click #go' : function() {
         var url, email;
         url = $('#url').attr('value');
@@ -16,10 +17,10 @@ if (Meteor.isClient) {
         Urls.insert({url: url, email: email});
 
         if (Meteor.user()) {
-            console.log('thanks');
+          Feedback.pop('Thanks!');
         }
         else {
-            console.log('thanks. want to sign up?');
+          Feedback.pop('Please login to send a link');
         }
     }
   });
@@ -30,3 +31,9 @@ if (Meteor.isServer) {
 
   });
 }
+
+Feedback = {
+  pop: function() {
+    
+  }
+};
