@@ -1,15 +1,18 @@
 <head>
-  <title>I Thought You'd Like This</title>
+    <title>I Thought You'd Like This</title>
 </head>
 
 <body>
-  {{loginButtons}}
-  {{> linkForm}}
+    {{loginButtons}}
+    <div id="userMenu"></div>
+
+    {{> linkForm}}
 </body>
 
 <template name="linkForm">
-  <h1>I thought you'd like this.</h1>
-    <input type="url" placeholder="url" id="url" />
-    <input type="email" placeholder="email" id="email" />
-  <input type="button" value="Click" id="go" />
+    <h1>I thought you'd like this.</h1>
+        <input type="url" placeholder="url" id="url" required />
+        <input type="email" placeholder="email" id="email" required />
+        <input type="desc" placeholder="link description (optional)" id="desc" />
+        <input type="button" value="Click" id="go" />
 </template>
