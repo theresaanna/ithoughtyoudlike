@@ -69,11 +69,11 @@ if (Meteor.isClient) {
                         LinkRecipients.insert(
                             {
                                 email: email,
-                                links: {
+                                links: [{
                                     url: url, 
                                     desc: desc, 
-                                    sender: sender
-                                }
+                                    sender: sender.emails[0].address
+                                }]
                             },
                             Feedback.showLinkSubmissionResults
                         );
@@ -85,7 +85,7 @@ if (Meteor.isClient) {
                                 links: {
                                     url: url,
                                     desc: desc,
-                                    sender: sender
+                                    sender: sender.emails[0].address
                                 }
                             }},
                             Feedback.showLinkSubmissionResults
@@ -103,11 +103,27 @@ if (Meteor.isClient) {
         'click #linkList': function(event) {
             event.preventDefault();
 
-            var userCursor, userObj, email;
+            var userCursor, userObj, email, listLen, linkList, domList;
             email = Meteor.user();
             userCursor = LinkRecipients.find({email: email.emails[0].address});
             userObj = userCursor.fetch();
-            console.log(userObj);
+
+            if (is.empty(userObj)) {
+                Feedback.pop('No links right now', 'contentMsg');
+            }
+            else {
+                linkList = userObj[0].links;
+                listLen = linkList.length - 1;
+
+                domList = document.createElement('div');
+                domList.id = 'userLinks';
+                for (var i=0; i <= listLen; i++) {
+                    domList.innerHTML += '<div><span>' + linkList[i].url + '</span><span>' + linkList[i].desc + '</span><span>' + linkList[i].sender + '</span></div>';
+                }
+
+                $('#content').append(domList);
+            }
+
         }
     });
 }
