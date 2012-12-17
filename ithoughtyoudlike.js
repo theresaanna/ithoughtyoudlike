@@ -42,6 +42,10 @@ Feedback = {
     }
 };
 
+function encodeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+}
+
 /* client events and config */
 if (Meteor.isClient) {
     Accounts.ui.config({
@@ -55,9 +59,9 @@ if (Meteor.isClient) {
         'click #go' : function() {
                 var url, email, desc, sender, recipientCursor, recipientObj;
                 // retrieve form data
-                url = $('#url').attr('value');
-                email = $('#email').attr('value');
-                desc = $('#desc').attr('value');
+                url = encodeHTML($('#url').attr('value'));
+                email = encodeHTML($('#email').attr('value'));
+                desc = encodeHTML($('#desc').attr('value'));
                 sender = Meteor.user();
 
                 // if the link sender is logged in
@@ -103,7 +107,7 @@ if (Meteor.isClient) {
         'click #linkList': function(event) {
             event.preventDefault();
 
-            var userCursor, userObj, email, listLen, linkList, domList;
+            var userCursor, userObj, email, listLen, linkList, domList, url;
             email = Meteor.user();
             userCursor = LinkRecipients.find({email: email.emails[0].address});
             userObj = userCursor.fetch();
@@ -118,7 +122,8 @@ if (Meteor.isClient) {
                 domList = document.createElement('div');
                 domList.id = 'userLinks';
                 for (var i=0; i <= listLen; i++) {
-                    domList.innerHTML += '<div><span>' + linkList[i].url + '</span><span>' + linkList[i].desc + '</span><span>' + linkList[i].sender + '</span></div>';
+                    url = encodeHTML(linkList[i].url);
+                    domList.innerHTML += '<div><span><a href="' + url  + '">' + url + '</a></span><span>' + encodeHTML(linkList[i].desc) + '</span><span>' + encodeHTML(linkList[i].sender) + '</span></div>';
                 }
 
                 $('#content').append(domList);
