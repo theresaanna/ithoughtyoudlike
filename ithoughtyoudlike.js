@@ -53,7 +53,7 @@ if (Meteor.isClient) {
     Template.linkForm.events({
         // submit a new link
         'click #go' : function() {
-                var url, email, desc, sender;
+                var url, email, desc, sender, recipientCursor, recipientObj;
                 // retrieve form data
                 url = $('#url').attr('value');
                 email = $('#email').attr('value');
@@ -62,21 +62,52 @@ if (Meteor.isClient) {
 
                 // if the link sender is logged in
                 if (sender) {
-                    
-                    LinkRecipients.insert(
-                        {
-                            url: url, 
-                            email: email, 
-                            desc: desc, 
-                            sender: sender
-                        },
-                        Feedback.showLinkSubmissionResults
-                    );
+                    recipientCursor = LinkRecipients.find({email: email});
+                    recipientObj = recipientCursor.fetch();
+
+                    if (is.empty(recipientObj)) {
+                        LinkRecipients.insert(
+                            {
+                                email: email,
+                                links: {
+                                    url: url, 
+                                    desc: desc, 
+                                    sender: sender
+                                }
+                            },
+                            Feedback.showLinkSubmissionResults
+                        );
+                    }
+                    else {
+                        LinkRecipients.update(
+                            {email: email},
+                            {$addToSet: {
+                                links: {
+                                    url: url,
+                                    desc: desc,
+                                    sender: sender
+                                }
+                            }},
+                            Feedback.showLinkSubmissionResults
+                        );
+                    }
                 }
                 // prompt to login
                 else {
                     Feedback.pop('Please login to send a link', 'userMenu');
                 }
+        },
+    });
+
+    Template.userDataMenu.events({
+        'click #linkList': function(event) {
+            event.preventDefault();
+
+            var userCursor, userObj, email;
+            email = Meteor.user();
+            userCursor = LinkRecipients.find({email: email.emails[0].address});
+            userObj = userCursor.fetch();
+            console.log(userObj);
         }
     });
 }

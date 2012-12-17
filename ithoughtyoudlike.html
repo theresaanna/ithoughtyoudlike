@@ -1,20 +1,13 @@
 <head>
     <title>I Thought You'd Like This</title>
+    <script src="libs/is.js"></script>
 </head>
 
 <body>
     {{loginButtons}}
     <div id="userMenu"></div>
     
-    {{#if currentUser}}
-        <div id="userMenu">
-            <ul>
-                <li><a href="">My link list</a></li>
-                <li><a href="">Sent links</a></li>
-            </ul>
-        </div>
-    {{/if}}
-
+    {{> userDataMenu}}
 
     {{> linkForm}}
 </body>
@@ -29,4 +22,15 @@
         <label><input type="checkbox" checked /> Please email them so that they know I sent this link.</label>
         <input type="button" value="Click" id="go" />
     </form>
+</template>
+
+<template name="userDataMenu">
+    {{#if currentUser}}
+        <div id="userDataMenu">
+            <ul>
+                <li><a href="" id="linkList">My link list</a></li>
+                <li><a href="">Sent links</a></li>
+            </ul>
+        </div>
+    {{/if}}
 </template>
